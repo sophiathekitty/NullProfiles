@@ -47,6 +47,13 @@ class ProfileImage extends clsModel {
             'Default'=>"icon",
             'Extra'=>""
         ],[
+            'Field'=>"subtype",
+            'Type'=>"varchar(12)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"upload",
+            'Extra'=>""
+        ],[
             'Field'=>"created",
             'Type'=>"datetime",
             'Null'=>"NO",

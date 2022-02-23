@@ -62,7 +62,12 @@ class UserPronouns extends clsModel {
     }
     public static function Pronouns($user_id){
         $instance = UserPronouns::GetInstance();
-        return $instance->LoadAllWhere(['user_id'=>$user_id],['preferred'=>"DESC","ordering"=>"ASC"]);
+        $pronouns = $instance->LoadAllWhere(['user_id'=>$user_id],['preferred'=>"DESC","ordering"=>"ASC"]);
+        if(count($pronouns) == 0){
+            $instance->Save(['user_id'=>$user_id]);
+            $pronouns = $instance->LoadAllWhere(['user_id'=>$user_id],['preferred'=>"DESC","ordering"=>"ASC"]);
+        }
+        return $pronouns;
     }
     public static function SavePronouns($data){
         $instance = UserPronouns::GetInstance();
