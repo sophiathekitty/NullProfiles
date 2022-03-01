@@ -1,0 +1,26 @@
+<form id="signup" step="0">
+    <fieldset model="user" step="0">
+        <legend>login info</legend>
+        <input name="username" type="text" var="username" placeholder="name" />
+        <input name="password" type="password" var="password" placeholder="pass" />    
+    </fieldset>
+    <fieldset model="pronouns" step="1">
+        <legend>pronouns</legend>
+        <div class="pronouns" collection="pronouns">
+        </div>
+        <a href="#" action="add" model="pronouns">add more</a>
+    </fieldset>
+    <fieldset model="room_uses" step="2">
+        <legend>room uses</legend>
+        <div class="room_uses" collection="room_uses">
+        </div>
+        <a href="#" action="add" model="room_uses">add more</a>
+    </fieldset>
+
+    <nav>
+        <a href="#" action="next">next</a>
+        <a href="#" action="back">back</a>
+        <a href="#" action="signup">signup</a>
+        <a href="#" action="cancel">cancel</a>    
+    </nav>
+</form>

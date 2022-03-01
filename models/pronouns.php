@@ -39,7 +39,7 @@ class PronounSets extends clsModel {
             'Default'=>"",
             'Extra'=>""
         ],[
-            'Field'=>"themselves",
+            'Field'=>"themself",
             'Type'=>"varchar(50)",
             'Null'=>"NO",
             'Key'=>"",
@@ -94,7 +94,7 @@ class PronounSets extends clsModel {
             'them'=>'her',
             'their'=>'her',
             'theirs'=>'hers',
-            'themselves'=>'herself',
+            'themself'=>'herself',
         ]);
         PronounSets::CheckPronouns([
             'id'=>2,
@@ -102,7 +102,7 @@ class PronounSets extends clsModel {
             'them'=>'him',
             'their'=>'his',
             'theirs'=>'his',
-            'themselves'=>'himself',
+            'themself'=>'himself',
         ]);
         PronounSets::CheckPronouns([
             'id'=>3,
@@ -110,7 +110,7 @@ class PronounSets extends clsModel {
             'them'=>'aer',
             'their'=>'aer',
             'theirs'=>'aers',
-            'themselves'=>'aerself',
+            'themself'=>'aerself',
         ]);
         PronounSets::CheckPronouns([
             'id'=>4,
@@ -118,7 +118,7 @@ class PronounSets extends clsModel {
             'them'=>'faer',
             'their'=>'faer',
             'theirs'=>'faers',
-            'themselves'=>'faerself',
+            'themself'=>'faerself',
         ]);
         PronounSets::CheckPronouns([
             'id'=>5,
@@ -126,7 +126,7 @@ class PronounSets extends clsModel {
             'them'=>'per',
             'their'=>'pers',
             'theirs'=>'pers',
-            'themselves'=>'perself',
+            'themself'=>'perself',
         ]);
         PronounSets::CheckPronouns([
             'id'=>6,
@@ -134,7 +134,7 @@ class PronounSets extends clsModel {
             'them'=>'em',
             'their'=>'eir',
             'theirs'=>'eirs',
-            'themselves'=>'eirself',
+            'themself'=>'eirself',
         ]);
         PronounSets::CheckPronouns([
             'id'=>7,
@@ -142,7 +142,7 @@ class PronounSets extends clsModel {
             'them'=>'em',
             'their'=>'eir',
             'theirs'=>'eirs',
-            'themselves'=>'emself',
+            'themself'=>'emself',
         ]);
         PronounSets::CheckPronouns([
             'id'=>8,
@@ -150,7 +150,7 @@ class PronounSets extends clsModel {
             'them'=>'ver',
             'their'=>'vis',
             'theirs'=>'vis',
-            'themselves'=>'verself',
+            'themself'=>'verself',
         ]);
         PronounSets::CheckPronouns([
             'id'=>9,
@@ -158,7 +158,7 @@ class PronounSets extends clsModel {
             'them'=>'xem',
             'their'=>'xyr',
             'theirs'=>'xyrs',
-            'themselves'=>'xemself',
+            'themself'=>'xemself',
         ]);
         PronounSets::CheckPronouns([
             'id'=>10,
@@ -166,7 +166,7 @@ class PronounSets extends clsModel {
             'them'=>'hir',
             'their'=>'hir',
             'theirs'=>'hirs',
-            'themselves'=>'hirself',
+            'themself'=>'hirself',
         ]);
         PronounSets::CheckPronouns([
             'id'=>11,
@@ -174,7 +174,7 @@ class PronounSets extends clsModel {
             'them'=>'zim',
             'their'=>'zir',
             'theirs'=>'zis',
-            'themselves'=>'zieself',
+            'themself'=>'zieself',
         ]);
         PronounSets::CheckPronouns([
             'id'=>12,
@@ -182,7 +182,7 @@ class PronounSets extends clsModel {
             'them'=>'ter',
             'their'=>'tem',
             'theirs'=>'ters',
-            'themselves'=>'terself',
+            'themself'=>'terself',
         ]);
         PronounSets::CheckPronouns([
             'id'=>13,
@@ -190,7 +190,7 @@ class PronounSets extends clsModel {
             'them'=>'it',
             'their'=>'it',
             'theirs'=>'its',
-            'themselves'=>'itself',
+            'themself'=>'itself',
         ]);
     }
     private static $default = [
@@ -199,7 +199,7 @@ class PronounSets extends clsModel {
         'them'=>'them',
         'their'=>'their',
         'theirs'=>'theirs',
-        'themselves'=>'themselves',
+        'themself'=>'themself',
     ];
     private static function CheckPronouns($data){
         $pronouns = PronounSets::PronounsId($data['id']);

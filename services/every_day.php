@@ -1,0 +1,3 @@
+<?php
+ProfileImageStamp::FindDefaults();
+?>

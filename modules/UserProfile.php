@@ -1,5 +1,13 @@
 <?php
 class UserProfileStamp {
+    public static function Residence(){
+        $users = Users::Residence();
+        $profiles = [];
+        foreach($users as $user){
+            $profiles[] = UserProfileStamp::UserProfile($user['id']);
+        }
+        return $profiles;
+    }
     public static function UserProfile($user_id){
         $profile = ['id'=>$user_id];
         $user = new Users();
@@ -11,13 +19,6 @@ class UserProfileStamp {
         $profile['images'] = ProfileImageStamp::ProfileImages($user_id);
         $profile['rooms'] = UserProfileStamp::Rooms($user_id);
         $profile['schedule'] = SleepSchedule::Bedtime($user_id,date("n"),date("w"));
-        if(count($profile['rooms']) == 0){
-            if($user['bedroom_id']){
-                RoomUses::SaveRoomUse(['user_id'=>$user_id,'room_id'=>$user['bedroom_id']]);
-                $profile['rooms'] = RoomUses::UserId($user_id);
-            }
-        }
-
         return $profile;
     }
     public static function Pronouns($user_id){

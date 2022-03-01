@@ -24,14 +24,14 @@ class ProfileImage extends clsModel {
             'Null'=>"NO",
             'Key'=>"",
             'Default'=>"",
-            'Extra'=>"0"
+            'Extra'=>""
         ],[
             'Field'=>"url",
             'Type'=>"varchar(200)",
             'Null'=>"NO",
             'Key'=>"",
             'Default'=>"",
-            'Extra'=>"0"
+            'Extra'=>""
         ],[
             'Field'=>"user_id",
             'Type'=>"int(11)",
@@ -44,14 +44,14 @@ class ProfileImage extends clsModel {
             'Type'=>"varchar(12)",
             'Null'=>"NO",
             'Key'=>"",
-            'Default'=>"icon",
+            'Default'=>"icons",
             'Extra'=>""
         ],[
             'Field'=>"subtype",
             'Type'=>"varchar(12)",
             'Null'=>"NO",
             'Key'=>"",
-            'Default'=>"upload",
+            'Default'=>"uploads",
             'Extra'=>""
         ],[
             'Field'=>"created",
@@ -73,6 +73,10 @@ class ProfileImage extends clsModel {
     public static function UserImages($user_id){
         $instance = ProfileImage::GetInstance();
         return $instance->LoadAllWhere(['user_id'=>$user_id]);
+    }
+    public static function UserImageUrl($url){
+        $instance = ProfileImage::GetInstance();
+        return $instance->LoadWhere(['url'=>$url]);
     }
     public static function Images(){
         $instance = ProfileImage::GetInstance();
