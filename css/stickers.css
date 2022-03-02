@@ -1,0 +1,25 @@
+div.sticker {
+    --sticker_size: 5em;
+    --sticker_border: #fab;
+    --sticker_shadow: #0ba;
+    position:relative;
+    display:inline-block;
+    width:var(--sticker_size);
+    height:var(--sticker_size);
+}
+div.sticker div {
+    position:absolute;
+    --sticker_offset: 1%;
+    top: var(--sticker_offset);
+    left: var(--sticker_offset);
+    right: var(--sticker_offset);
+    bottom: var(--sticker_offset);
+}
+div.sticker div.border {
+    background-color: var(--sticker_border);
+    --sticker_offset: -3%;
+}
+div.sticker div.shadow {
+    background-color: var(--sticker_shadow);
+    --sticker_offset: -6%;
+}
