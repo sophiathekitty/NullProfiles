@@ -1,5 +1,12 @@
 <?php
+/**
+ * generates user profile stamps
+ */
 class UserProfileStamp {
+    /**
+     * get user profiles for all the people who live here
+     * @return array list of user profile stamp data arrays
+     */
     public static function Residence(){
         $users = Users::Residence();
         $profiles = [];
@@ -8,6 +15,11 @@ class UserProfileStamp {
         }
         return $profiles;
     }
+    /**
+     * user profile stamp. user:username, user:bedtime, user:awake_time, pronouns, images, rooms, bedtime schedule
+     * @param int $user_id the user's id
+     * @return array user profile stamp data array
+     */
     public static function UserProfile($user_id){
         $profile = ['id'=>$user_id];
         $user = new Users();
@@ -21,6 +33,11 @@ class UserProfileStamp {
         $profile['schedule'] = SleepSchedule::Bedtime($user_id,date("n"),date("w"));
         return $profile;
     }
+    /**
+     * user pronouns stamp
+     * @param int $user_id the user's id
+     * @return array the user's pronouns
+     */
     public static function Pronouns($user_id){
         $profile = UserPronouns::Pronouns($user_id);
         for($i = 0; $i < count($profile); $i++){
@@ -33,6 +50,11 @@ class UserProfileStamp {
         }
         return $profile;
     }
+    /**
+     * gets the user's room uses
+     * @param int $user_id the user's id
+     * @return array the user's room uses list
+     */
     public static function Rooms($user_id){
         $rooms = RoomUses::UserId($user_id);
         if(count($rooms) == 0){

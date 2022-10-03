@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * stores pronoun sets
+ */
 class PronounSets extends clsModel {
     public $table_name = "PronounSets";
     public $fields = [
@@ -62,11 +64,20 @@ class PronounSets extends clsModel {
         if(is_null(PronounSets::$instance)) PronounSets::$instance = new PronounSets();
         return PronounSets::$instance;
     }
+    /**
+     * get the pronouns by the set id
+     * @param int $id the id of the pronouns set
+     * @return array the pronouns set data array
+     */
     public static function PronounsId($id){
         if($id == 0) return PronounSets::$default;
         $instance = PronounSets::GetInstance();
         return $instance->LoadWhere(['id'=>$id]);
     }
+    /**
+     * get all the pronouns sets
+     * @return array list of all the pronouns sets data arrays
+     */
     public static function Pronouns(){
         $instance = PronounSets::GetInstance();
         $pronouns = $instance->LoadAll();
@@ -81,12 +92,20 @@ class PronounSets extends clsModel {
         }
         return $pro;
     }
+    /**
+     * save a pronouns set
+     * @param array $data the pronouns set data array to be saved
+     * @return array save report ['last_insert_id'=>$id,'error'=>clsDB::$db_g->get_err(),'sql'=>$sql,'row'=>$row]
+     */
     public static function SavePronouns($data){
         $instance = PronounSets::GetInstance();
         $data = $instance->CleanData($data);
         if(isset($data['id']) && !is_null(PronounSets::PronounsId($data['id']))) return $instance->Save($data,['id'=>$data['id']]);
         return $instance->Save($data);
     }
+    /**
+     * create the default pronouns sets
+     */
     public static function CreateDefaults(){
         PronounSets::CheckPronouns([
             'id'=>1,
@@ -193,6 +212,9 @@ class PronounSets extends clsModel {
             'themself'=>'itself',
         ]);
     }
+    /**
+     * they/them pronouns are the default
+     */
     private static $default = [
         'id'=>"0",
         'they'=>'they',
@@ -201,6 +223,10 @@ class PronounSets extends clsModel {
         'theirs'=>'theirs',
         'themself'=>'themself',
     ];
+    /**
+     * check if a pronouns set exists already and if not create it
+     * @param array $data the pronouns set data array to check
+     */
     private static function CheckPronouns($data){
         $pronouns = PronounSets::PronounsId($data['id']);
         if(is_null($pronouns)){

@@ -1,6 +1,8 @@
 <?php
-
-
+/**
+ * linking table for user's pronouns. stores a user's relation to a set of pronouns
+ * like is this their preferred pronouns (if they have more than one set but like one set the most)
+ */
 class UserPronouns extends clsModel {
     public $table_name = "UserPronouns";
     public $fields = [
@@ -56,10 +58,21 @@ class UserPronouns extends clsModel {
         if(is_null(UserPronouns::$instance)) UserPronouns::$instance = new UserPronouns();
         return UserPronouns::$instance;
     }
+    /**
+     * get the user pronouns by the user pronouns id. why though?
+     * @param int $id the user pronouns id
+     * @return array the data array for a user pronouns
+     */
     public static function PronounsId($id){
         $instance = UserPronouns::GetInstance();
         return $instance->LoadWhere(['id'=>$id]);
     }
+    /**
+     * get a user's pronouns. will give them default pronouns
+     * if their pronouns are unknown. multiple pronouns are sorted by preferred value
+     * @param int $user_id the user's id
+     * @return array ordered list of the user's pronouns
+     */
     public static function Pronouns($user_id){
         $instance = UserPronouns::GetInstance();
         $pronouns = $instance->LoadAllWhere(['user_id'=>$user_id],['preferred'=>"DESC","ordering"=>"ASC"]);
@@ -69,6 +82,11 @@ class UserPronouns extends clsModel {
         }
         return $pronouns;
     }
+    /**
+     * save user pronouns
+     * @param array $data the data array for user pronouns
+     * @return array save report ['last_insert_id'=>$id,'error'=>clsDB::$db_g->get_err(),'sql'=>$sql,'row'=>$row]
+     */
     public static function SavePronouns($data){
         $instance = UserPronouns::GetInstance();
         $data = $instance->CleanData($data);
