@@ -20,14 +20,16 @@ class ProfileImageStamp {
         return $profile;
     }
     /**
-     * parse the images to get their full url
+     * parse the images to get their full url from ImageFile model
      * @param array list of profile image data arrays
      * @return array the list of image data arrays with the full url to the image
      */
     private static function ParseImages($images){
         for($i = 0; $i < count($images); $i++){
-            $server = Servers::ServerMacAddress($images[$i]['mac_address']);
-            $images[$i]['url'] = "http://".$server['url'].$images[$i]['url'];
+            $image = ImageFile::ImageGUID($images[$i]['guid']);
+            $images[$i]['url'] = ImageStamps::ImageURL($image);
+            //$server = Servers::ServerMacAddress($images[$i]['mac_address']);
+            //$images[$i]['url'] = "http://".$server['url'].$images[$i]['url'];
         }
         return $images;
     }
@@ -39,16 +41,17 @@ class ProfileImageStamp {
     public static function FindDefaults(){
         global $root_path;
         $path = $root_path."/plugins/NullProfiles/img/default/";
-        $shared_models_dir = opendir($path);
+        $dir = opendir($path);
         $images = [];
         
-        while ($file = readdir($shared_models_dir)) { 
+        while ($file = readdir($dir)) { 
             if(is_dir($path.$file) && $file != ".." && $file != "."){ 
                 $images = ProfileImageStamp::CrawlFolder($images,$file);
             }
         }
         foreach($images as $image){
-            if(is_null(ProfileImage::UserImageUrl($image['url']))){
+            if(is_null(ProfileImage::UserImageGUID($image['guid']))){
+                ImageFile::SaveImage($image);
                 ProfileImage::SaveImage($image);
             }
         }
@@ -64,15 +67,15 @@ class ProfileImageStamp {
     private static function CrawlFolder($images,$type,$subtype = "default"){
         global $root_path;
         $path = $root_path."/plugins/NullProfiles/img/$subtype/$type";
-        $shared_models_dir = opendir($path);
+        $dir = opendir($path);
         // LOOP OVER ALL OF THE  FILES    
-        while ($file = readdir($shared_models_dir)) { 
-            if(!is_dir($file) && (endsWith($file, '.png') || endsWith($file, '.jpg'))) { 
-                $images[] = ["mac_address"=>LocalMac(),"type"=>$type,"subtype"=>$subtype,"file"=>$file,"url"=>"/plugins/NullProfiles/img/$subtype/$type/$file"];
+        while ($file = readdir($dir)) { 
+            if(!is_dir($file) && (endsWith($file, '.png') || endsWith($file, '.jpg') || endsWith($file, '.gif') || endsWith($file, '.webp'))) { 
+                $images[] = ["type"=>$type,"subtype"=>$subtype,"file"=>$file,"path"=>"/plugins/NullProfiles/img/$subtype/$type/","guid"=>ImageFile::MakeGUID("/plugins/NullProfiles/img/$subtype/$type/","$file")];
             }
         }
         // CLOSE THE DIRECTORY
-        closedir($shared_models_dir);
+        closedir($dir);
         return $images;    
     }
 }
