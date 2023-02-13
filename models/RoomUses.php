@@ -32,28 +32,21 @@ class RoomUses extends clsModel {
             'Type'=>"varchar(10)",
             'Null'=>"NO",
             'Key'=>"",
-            'Default'=>"bedroom",
+            'Default'=>"home",
             'Extra'=>""
         ],[
             'Field'=>"priority",
             'Type'=>"int(11)",
             'Null'=>"NO",
             'Key'=>"",
-            'Default'=>"0",
+            'Default'=>"1",
             'Extra'=>""
         ],[
-            'Field'=>"light_min",
+            'Field'=>"light_level",
             'Type'=>"float",
-            'Null'=>"YES",
+            'Null'=>"NO",
             'Key'=>"",
-            'Default'=>null,
-            'Extra'=>""
-        ],[
-            'Field'=>"light_max",
-            'Type'=>"float",
-            'Null'=>"YES",
-            'Key'=>"",
-            'Default'=>null,
+            'Default'=>"1",
             'Extra'=>""
         ],[
             'Field'=>"light_end",
@@ -63,18 +56,137 @@ class RoomUses extends clsModel {
             'Default'=>null,
             'Extra'=>""
         ],[
-            'Field'=>"month",
-            'Type'=>"int(11)",
-            'Null'=>"YES",
+            'Field'=>"January",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
             'Key'=>"",
-            'Default'=>null,
+            'Default'=>"1",
             'Extra'=>""
         ],[
-            'Field'=>"day_of_week",
-            'Type'=>"int(11)",
-            'Null'=>"YES",
+            'Field'=>"February",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
             'Key'=>"",
-            'Default'=>null,
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"March",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"April",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"May",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"June",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"July",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"August",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"September",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"October",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"November",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"December",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"Sunday",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"Monday",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"Tuesday",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"Wednesday",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"Thursday",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"Friday",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
+            'Extra'=>""
+        ],[
+            'Field'=>"Saturday",
+            'Type'=>"tinyint(1)",
+            'Null'=>"NO",
+            'Key'=>"",
+            'Default'=>"1",
             'Extra'=>""
         ],[
             'Field'=>"start_time",
@@ -86,20 +198,6 @@ class RoomUses extends clsModel {
         ],[
             'Field'=>"stop_time",
             'Type'=>"time",
-            'Null'=>"YES",
-            'Key'=>"",
-            'Default'=>null,
-            'Extra'=>""
-        ],[
-            'Field'=>"start_date",
-            'Type'=>"date",
-            'Null'=>"YES",
-            'Key'=>"",
-            'Default'=>null,
-            'Extra'=>""
-        ],[
-            'Field'=>"stop_date",
-            'Type'=>"date",
             'Null'=>"YES",
             'Key'=>"",
             'Default'=>null,
@@ -142,29 +240,33 @@ class RoomUses extends clsModel {
         return $instance->LoadAllWhere(['room_id'=>$room_id],['start_time'=>"ASC",'stop_time'=>"ASC"]);
     }
     /**
+     * get room uses that need to start this minute
+     * @return array a list of room uses
+     */
+    public static function StartingNow(){
+        $instance = RoomUses::GetInstance();
+        return $instance->LoadAllWhere(['start_time'=>date("H:i:00"),date("l")=>1,date("F")=>1]);
+    }
+    /**
+     * get the room uses for the current month and day of the week (and any that aren't restricted by month)
+     * @param int $room_id the room's id
+     * @return array the data array for the room use
+     */
+    public static function RoomNow($room_id){
+        return RoomUses::RoomTime($room_id,date("F"),date("l"));
+    }
+    /**
      * get the room uses for a specific month and day of the week (or any that aren't restricted like that)
      * @param int $room_id the room's id
-     * @param int $month the month date("n")
-     * @param int $day_of_week the day of the week date("N")
+     * @param string $month the month date("F")
+     * @param string $day_of_week the day of the week date("l") (lower case 'L') Sunday through Monday
      * @return array the data array for the room use
      */
     public static function RoomTime($room_id,$month,$day_of_week){
         $instance = RoomUses::GetInstance();
         //$room =  $instance->LoadWhere(['room_id'=>$room_id,'month'=>$month,'day_of_week'=>$day_of_week]);
-        $uses = $instance->LoadAllWhere(['room_id'=>$room_id,'month'=>$month,'day_of_week'=>$day_of_week],['start_time'=>"ASC",'stop_time'=>"ASC"]);
-        Debug::Log("RoomUses::RoomTime","room_id:$room_id,month:$month,day_of_week:$day_of_week",$uses);
-        $room =  $instance->LoadAllWhere(['room_id'=>$room_id,'month'=>$month,'day_of_week'=>NULL],['start_time'=>"ASC",'stop_time'=>"ASC"]);
-        Debug::Log("RoomUses::RoomTime","room_id:$room_id,month:$month,day_of_week:null",$room,clsDB::$db_g->last_sql,clsDB::$db_g->get_err());
-        $uses = array_merge($uses,$room);
-        $room = $instance->LoadAllWhere(['room_id'=>$room_id,'month'=>null,'day_of_week'=>$day_of_week],['start_time'=>"ASC",'stop_time'=>"ASC"]);
-        Debug::Log("RoomUses::RoomTime","room_id:$room_id,month:null,day_of_week:$day_of_week",$room,clsDB::$db_g->last_sql,clsDB::$db_g->get_err());
-        $uses = array_merge($uses,$room);
-        $room = $instance->LoadAllWhere(['room_id'=>$room_id,'month'=>null,'day_of_week'=>null],['start_time'=>"ASC",'stop_time'=>"ASC"]);
-        Debug::Log("RoomUses::RoomTime","room_id:$room_id,month:null,day_of_week:null",$room,clsDB::$db_g->last_sql,clsDB::$db_g->get_err());
-        $uses = array_merge($uses,$room);
-        //if(is_null($room)) $room =  $instance->LoadAllWhere(['room_id'=>$room_id,'day_of_week'=>$day_of_week]);
-        //if(is_null($room)) $room =  $instance->LoadAllWhere(['room_id'=>$room_id,'month'=>$month]);
-        //if(is_null($room)) $room =  $instance->LoadAllWhere(['room_id'=>$room_id]);
+        $uses = $instance->LoadAllWhere(['room_id'=>$room_id,$month=>1,$day_of_week=>1],['start_time'=>"ASC",'stop_time'=>"ASC"]);
+        Debug::Log("RoomUses::RoomTime","room_id:$room_id,month:$month,day_of_week:$day_of_week",$uses,clsDB::$db_g->last_sql,clsDB::$db_g->get_err());
         return $uses;
     }
     /**

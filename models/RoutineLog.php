@@ -26,13 +26,6 @@ class RoutinesLog extends clsModel {
             'Null'=>"NO",
             'Key'=>"",
             'Default'=>"current_timestamp()",
-            'Extra'=>"on update current_timestamp()"
-        ],[
-            'Field'=>"created",
-            'Type'=>"datetime",
-            'Null'=>"NO",
-            'Key'=>"",
-            'Default'=>"current_timestamp()",
             'Extra'=>""
         ]
     ];

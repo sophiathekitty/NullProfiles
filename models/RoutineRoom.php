@@ -42,18 +42,11 @@ class RoutineRoom extends clsModel {
             'Default'=>"2",
             'Extra'=>""
         ],[
-            'Field'=>"light_min",
+            'Field'=>"light_level",
             'Type'=>"float",
-            'Null'=>"YES",
+            'Null'=>"NO",
             'Key'=>"",
-            'Default'=>null,
-            'Extra'=>""
-        ],[
-            'Field'=>"light_max",
-            'Type'=>"float",
-            'Null'=>"YES",
-            'Key'=>"",
-            'Default'=>null,
+            'Default'=>"1",
             'Extra'=>""
         ],[
             'Field'=>"light_end",
@@ -98,18 +91,11 @@ class RoutineRoom extends clsModel {
     /**
      * get the room use for a specific month and day of the week
      * @param int $room_id the room's id
-     * @param int $month the month
-     * @param int $day_of_week the day of the week
      * @return array the data array for the room use
-     * @warning what if there's more than one room use? 
-     * is that just not allowed? how am i going to prevent that?
      */
-    public static function RoomTime($room_id,$month,$day_of_week){
+    public static function RoomId($room_id){
         $instance = RoutineRoom::GetInstance();
-        $room =  $instance->LoadWhere(['room_id'=>$room_id,'month'=>$month,'day_of_week'=>$day_of_week]);
-        if(is_null($room)) $room =  $instance->LoadWhere(['room_id'=>$room_id,'day_of_week'=>$day_of_week]);
-        if(is_null($room)) $room =  $instance->LoadWhere(['room_id'=>$room_id,'month'=>$month]);
-        return $room;
+        return $instance->LoadAllWhere(['room_id'=>$room_id]);
     }
     /**
      * save a room use

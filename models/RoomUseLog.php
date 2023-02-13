@@ -25,7 +25,7 @@ class RoomUseLog extends clsModel {
             'Type'=>"varchar(10)",
             'Null'=>"NO",
             'Key'=>"",
-            'Default'=>"bedroom",
+            'Default'=>"home",
             'Extra'=>""
         ],[
             'Field'=>"priority",
@@ -35,18 +35,11 @@ class RoomUseLog extends clsModel {
             'Default'=>"1",
             'Extra'=>""
         ],[
-            'Field'=>"light_min",
+            'Field'=>"light_level",
             'Type'=>"float",
-            'Null'=>"YES",
+            'Null'=>"NO",
             'Key'=>"",
-            'Default'=>null,
-            'Extra'=>""
-        ],[
-            'Field'=>"light_max",
-            'Type'=>"float",
-            'Null'=>"YES",
-            'Key'=>"",
-            'Default'=>null,
+            'Default'=>"1",
             'Extra'=>""
         ],[
             'Field'=>"light_end",
@@ -64,7 +57,7 @@ class RoomUseLog extends clsModel {
             'Extra'=>""
         ],[
             'Field'=>"stop",
-            'Type'=>"time",
+            'Type'=>"datetime",
             'Null'=>"NO",
             'Key'=>"",
             'Default'=>"",
@@ -86,11 +79,11 @@ class RoomUseLog extends clsModel {
      */
     public static function LogRoomUse($data){
         $instance = RoomUseLog::GetInstance();
-        if(isset($data['stop_time'])) $data['stop'] = date('Y-m-d ').$data['stop_time'];
-        if(isset($data['length_minutes'])) $data['stop'] = date('Y-m-d H:i:s',time()+MinutesToSeconds($data['length_minutes']));
-        $data = $instance->CleanData($data);
+        $instance->PruneField("stop",DaysToSeconds(2));
+        if(!isset($data['stop']) && isset($data['stop_time'])) $data['stop'] = date('Y-m-d ').$data['stop_time'];
+        if(!isset($data['stop']) && isset($data['length_minutes'])) $data['stop'] = date('Y-m-d H:i:s',time()+MinutesToSeconds($data['length_minutes']));
+        $data = $instance->CleanDataSkipId($data);
         if(!isset($data['stop'])) $data['stop'] = date('Y-m-d H:i:s',time()+HoursToSeconds(2));
-        if(isset($data['id'])) return $instance->Save($data,['id'=>$data['id']]);
         return $instance->Save($data);
     }
     /**
@@ -102,13 +95,15 @@ class RoomUseLog extends clsModel {
         $instance = RoomUseLog::GetInstance();
         $uses = $instance->LoadWhereFieldAfter(['room_id'=>$room_id],'stop',date('Y-m-d H:i:s'));
         if(count($uses) == 0) return null;
-        usort($uses,"sort_room_uses_by_priority_desc");
+        //usort($uses,"sort_room_uses_by_priority_desc");
         $active_uses = [];
+        $now = time();
         foreach($uses as $use){
-            $now = time();
-            if($now > strtotime($use['start'])) $active_uses[] = $use;
+            if(strtotime($use['start']) < $now && $now < strtotime($use['stop'])) $active_uses[] = $use;
         }
         if(count($active_uses) == 0) return null;
+        return $active_uses;
+        /*
         if(count($active_uses) == 1) return $active_uses[0];
         $light_max = 0;
         $light_max_count = 0;
@@ -117,7 +112,11 @@ class RoomUseLog extends clsModel {
         $light_end = 0;
         $light_end_count = 0;
         $end = time();
+        $types = [];
+        $priority = 0;
         foreach($active_uses as $use){
+            if(isset($types[$use['type']])) $types[$use['type']]++;
+            else $types[$use['type']] = 1;
             if(!is_null($use['light_max'])){
                 $light_max += $use['light_max'];
                 $light_max_count++;
@@ -132,21 +131,26 @@ class RoomUseLog extends clsModel {
             }
             $stop = strtotime($use['stop']);
             if($stop > $end) $end = $stop;
+            if($priority < $use['priority']) $priority = $use['priority'];
         }
         if($light_max_count + $light_min_count + $light_end_count > 0){
-            $use = ['light_min'=>null,'light_max'=>null,'light_end'=>null,'stop'=>date('Y-m-d H:i:s',$end)];
+            $type = "home";
+            $c = 0;
+            foreach($types as $t => $count){
+                if($count > $c){
+                    $type = $t;
+                    $c = $count;
+                }
+            }
+            $use = ['type'=>$type,'light_min'=>null,'light_max'=>null,'light_end'=>null,'stop'=>date('Y-m-d H:i:s',$end),'priority'=>$priority];
             if($light_max_count > 0) $use['light_max'] /= $light_max_count;
             if($light_min_count > 0) $use['light_min'] /= $light_min_count;
             if($light_end_count > 0) $use['light_end'] /= $light_end_count;
             return $use;
         }
-        
+        */
         return null;
     }
-}
-function sort_room_uses_by_priority_desc($a,$b){
-    if($a['priority'] == $b['priority']) return 0;
-    return ($a['priority'] > $b['priority']) ? -1 : 1;
 }
 if(defined('VALIDATE_TABLES')){
     clsModel::$models[] = new RoomUseLog();
