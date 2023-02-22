@@ -23,3 +23,5 @@ sudo crontab -e
 ```Apache config
 3 * * * * sh /var/www/html/plugins/NullProfiles/gitpull.sh
 ```
+
+* icons made with [open source icons](https://game-icons.net/)
