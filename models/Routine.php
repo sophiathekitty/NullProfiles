@@ -27,6 +27,20 @@ class Routines extends clsModel {
             'Key'=>"",
             'Default'=>"",
             'Extra'=>""
+        ],[
+            'Field'=>"start_time",
+            'Type'=>"time",
+            'Null'=>"YES",
+            'Key'=>"",
+            'Default'=>null,
+            'Extra'=>""
+        ],[
+            'Field'=>"stop_time",
+            'Type'=>"time",
+            'Null'=>"YES",
+            'Key'=>"",
+            'Default'=>null,
+            'Extra'=>""
         ]
     ];
     private static $instance = null;
@@ -38,6 +52,14 @@ class Routines extends clsModel {
         return Routines::$instance;
     }
     /**
+     * get all routines
+     * @return array list of all routines data arrays
+     */
+    public static function AllRoutines(){
+        $instance = Routines::GetInstance();
+        return $instance->LoadAll();
+    }
+    /**
      * get room uses for a specific user
      * @param int $user_id the user's id
      * @return array list of user's routines data arrays
@@ -45,6 +67,15 @@ class Routines extends clsModel {
     public static function UserId($user_id){
         $instance = Routines::GetInstance();
         return $instance->LoadAllWhere(['user_id'=>$user_id]);
+    }
+    /**
+     * get a specific routine
+     * @param int $routine_id the routine's id
+     * @return array routine data arrays
+     */
+    public static function RoutineId($routine_id){
+        $instance = Routines::GetInstance();
+        return $instance->LoadWhere(['id'=>$routine_id]);
     }
     /**
      * save a room use

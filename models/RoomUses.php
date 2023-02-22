@@ -42,11 +42,18 @@ class RoomUses extends clsModel {
             'Default'=>"1",
             'Extra'=>""
         ],[
-            'Field'=>"light_level",
+            'Field'=>"light_min",
             'Type'=>"float",
-            'Null'=>"NO",
+            'Null'=>"YES",
             'Key'=>"",
-            'Default'=>"1",
+            'Default'=>null,
+            'Extra'=>""
+        ],[
+            'Field'=>"light_max",
+            'Type'=>"float",
+            'Null'=>"YES",
+            'Key'=>"",
+            'Default'=>null,
             'Extra'=>""
         ],[
             'Field'=>"light_end",

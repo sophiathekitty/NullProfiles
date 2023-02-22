@@ -2,8 +2,12 @@
 if(!isset($_GET['room_id'])) die();
 require_once("../../../includes/main.php");
 $room_use = CurrentRoomUse($_GET['room_id']);
-$tool_tip = $room_use['type'] ."
+$tool_tip = $room_use['title']."
 light level: ".$room_use['light_level'];
+if(!is_null($room_use['light_min'])) $tool_tip .= "
+light min: ".$room_use['light_min'];
+if(!is_null($room_use['light_max'])) $tool_tip .= "
+light max: ".$room_use['light_max'];
 if(!is_null($room_use['light_end'])) $tool_tip .= "
 light end: ".$room_use['light_end'];
 ?><span class="room_uses"><?php 

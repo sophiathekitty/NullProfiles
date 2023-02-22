@@ -51,9 +51,10 @@ class RoutinesLog extends clsModel {
      * @param array $data the room use data array to be saved
      * @return array save report ['last_insert_id'=>$id,'error'=>clsDB::$db_g->get_err(),'sql'=>$sql,'row'=>$row]
      */
-    public static function SaveRoutine($data){
+    public static function LogRoutine($data){
         $instance = RoutinesLog::GetInstance();
-        $data = $instance->CleanData($data);
+        $instance->PruneField('created',DaysToSeconds(1));
+        $data = $instance->CleanDataSkipId($data);
         if(isset($data['id'])) return $instance->Save($data,['id'=>$data['id']]);
         return $instance->Save($data);
     }

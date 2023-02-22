@@ -21,6 +21,20 @@ class RoomUseLog extends clsModel {
             'Default'=>"",
             'Extra'=>""
         ],[
+            'Field'=>"user_id",
+            'Type'=>"int(11)",
+            'Null'=>"YES",
+            'Key'=>"",
+            'Default'=>null,
+            'Extra'=>""
+        ],[
+            'Field'=>"routine_id",
+            'Type'=>"int(11)",
+            'Null'=>"YES",
+            'Key'=>"",
+            'Default'=>null,
+            'Extra'=>""
+        ],[
             'Field'=>"type",
             'Type'=>"varchar(10)",
             'Null'=>"NO",
@@ -35,11 +49,18 @@ class RoomUseLog extends clsModel {
             'Default'=>"1",
             'Extra'=>""
         ],[
-            'Field'=>"light_level",
+            'Field'=>"light_min",
             'Type'=>"float",
-            'Null'=>"NO",
+            'Null'=>"YES",
             'Key'=>"",
-            'Default'=>"1",
+            'Default'=>null,
+            'Extra'=>""
+        ],[
+            'Field'=>"light_max",
+            'Type'=>"float",
+            'Null'=>"YES",
+            'Key'=>"",
+            'Default'=>null,
             'Extra'=>""
         ],[
             'Field'=>"light_end",
@@ -103,53 +124,42 @@ class RoomUseLog extends clsModel {
         }
         if(count($active_uses) == 0) return null;
         return $active_uses;
-        /*
-        if(count($active_uses) == 1) return $active_uses[0];
-        $light_max = 0;
-        $light_max_count = 0;
-        $light_min = 0;
-        $light_min_count = 0;
-        $light_end = 0;
-        $light_end_count = 0;
-        $end = time();
-        $types = [];
-        $priority = 0;
-        foreach($active_uses as $use){
-            if(isset($types[$use['type']])) $types[$use['type']]++;
-            else $types[$use['type']] = 1;
-            if(!is_null($use['light_max'])){
-                $light_max += $use['light_max'];
-                $light_max_count++;
-            }
-            if(!is_null($use['light_min'])){
-                $light_min += $use['light_min'];
-                $light_min_count++;
-            }
-            if(!is_null($use['light_end'])){
-                $light_end += $use['light_end'];
-                $light_end_count++;
-            }
-            $stop = strtotime($use['stop']);
-            if($stop > $end) $end = $stop;
-            if($priority < $use['priority']) $priority = $use['priority'];
-        }
-        if($light_max_count + $light_min_count + $light_end_count > 0){
-            $type = "home";
-            $c = 0;
-            foreach($types as $t => $count){
-                if($count > $c){
-                    $type = $t;
-                    $c = $count;
-                }
-            }
-            $use = ['type'=>$type,'light_min'=>null,'light_max'=>null,'light_end'=>null,'stop'=>date('Y-m-d H:i:s',$end),'priority'=>$priority];
-            if($light_max_count > 0) $use['light_max'] /= $light_max_count;
-            if($light_min_count > 0) $use['light_min'] /= $light_min_count;
-            if($light_end_count > 0) $use['light_end'] /= $light_end_count;
-            return $use;
-        }
-        */
-        return null;
+    }
+    /**
+     * get the room uses for a specific routine
+     * @param int $routine_id the routine id
+     * @return array the list of room uses
+     */
+    public static function RoutineRoomUses($routine_id){
+        $instance = RoomUseLog::GetInstance();
+        return $instance->LoadAllWhere(['routine_id'=>$routine_id]);
+    }
+    /**
+     * get the room uses for a specific user
+     * @param int $user_id the user id
+     * @return array the list of room uses
+     */
+    public static function UserRoomUses($user_id){
+        $instance = RoomUseLog::GetInstance();
+        return $instance->LoadAllWhere(['user_id'=>$user_id]);
+    }
+    /**
+     * get the room uses for a specific routine
+     * @param int $routine_id the routine id
+     * @return array the list of room uses
+     */
+    public static function StartedRoutineRoomUses($routine_id){
+        $instance = RoomUseLog::GetInstance();
+        return $instance->LoadWhereFieldAfter(['routine_id'=>$routine_id],"start",date("Y-m-d H:i:s"));
+    }
+    /**
+     * get the room uses for a specific user
+     * @param int $user_id the user id
+     * @return array the list of room uses
+     */
+    public static function StartedUserRoomUses($user_id){
+        $instance = RoomUseLog::GetInstance();
+        return $instance->LoadWhereFieldAfter(['user_id'=>$user_id],"start",date("Y-m-d H:i:s"));
     }
 }
 if(defined('VALIDATE_TABLES')){

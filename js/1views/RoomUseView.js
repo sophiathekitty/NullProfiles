@@ -30,9 +30,9 @@ class RoomUseView extends View {
                 }
                 $("[room_id="+room_id+"] .room_use").attr("type",json.room_use.type);
                 $("[room_id="+room_id+"] .room_use").css("background-image","url(/plugins/NullProfiles/img/rooms/"+json.room_use.type+".png)");
-                var tool_tip = json.room_use.type+"\nlight level: "+json.room_use.light_level;
-                //if(json.room_use.light_min != null) tool_tip += "\nlight min: "+json.room_use.light_min;
-                //if(json.room_use.light_max != null) tool_tip += "\nlight max: "+json.room_use.light_max;
+                var tool_tip = json.room_use.title+"\nlight level: "+json.room_use.light_level;
+                if(json.room_use.light_min != null) tool_tip += "\nlight min: "+json.room_use.light_min;
+                if(json.room_use.light_max != null) tool_tip += "\nlight max: "+json.room_use.light_max;
                 if(json.room_use.light_end != null) tool_tip += "\nlight end: "+json.room_use.light_end;
                 $("[room_id="+room_id+"] .room_use").attr("title",tool_tip);
 

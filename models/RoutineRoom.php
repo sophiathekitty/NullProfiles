@@ -25,7 +25,7 @@ class RoutineRoom extends clsModel {
             'Type'=>"int(11)",
             'Null'=>"NO",
             'Key'=>"",
-            'Default'=>"",
+            'Default'=>"0",
             'Extra'=>""
         ],[
             'Field'=>"type",
@@ -42,11 +42,18 @@ class RoutineRoom extends clsModel {
             'Default'=>"2",
             'Extra'=>""
         ],[
-            'Field'=>"light_level",
+            'Field'=>"light_min",
             'Type'=>"float",
-            'Null'=>"NO",
+            'Null'=>"YES",
             'Key'=>"",
-            'Default'=>"1",
+            'Default'=>null,
+            'Extra'=>""
+        ],[
+            'Field'=>"light_max",
+            'Type'=>"float",
+            'Null'=>"YES",
+            'Key'=>"",
+            'Default'=>null,
             'Extra'=>""
         ],[
             'Field'=>"light_end",
@@ -96,6 +103,15 @@ class RoutineRoom extends clsModel {
     public static function RoomId($room_id){
         $instance = RoutineRoom::GetInstance();
         return $instance->LoadAllWhere(['room_id'=>$room_id]);
+    }
+    /**
+     * get the routine room use
+     * @param int $routine_id the routine's id
+     * @return array the data array for the room use
+     */
+    public static function RoutineId($routine_id){
+        $instance = RoutineRoom::GetInstance();
+        return $instance->LoadAllWhere(['routine_id'=>$routine_id]);
     }
     /**
      * save a room use
