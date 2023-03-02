@@ -6,15 +6,6 @@
  */
 function CurrentRoomUse($room_id){
     $uses = [];
-    // scheduled room uses
-    $room_uses = RoomUses::RoomNow($room_id);
-    $now = time();
-    foreach($room_uses as $use){
-        $use = ParseRoomUseScheduleTimes($use);
-        $start_time = strtotime($use['start']);
-        $stop_time = strtotime($use['stop']);
-        if($start_time < $now && $now < $stop_time) $uses[] = $use;
-    }
     $routines = RoomUseLog::CurrentRoomUses($room_id);
     if(!is_null($routines)){
         $uses = array_merge($uses,$routines);
@@ -64,6 +55,8 @@ function MergeRoomUsesOfTopPriority($uses){
     if(!is_array($uses) ||count($uses) == 0) return null;
     if(count($uses) == 1){
         $uses[0]['title'] = $uses[0]['type'];
+        if(!is_null($uses[0]['light_min'])) $uses[0]['light_level'] = $uses[0]['light_min'];
+        if(!is_null($uses[0]['light_max'])) $uses[0]['light_level'] = $uses[0]['light_max'];
         return $uses[0];
     } 
     usort($uses,"sort_room_uses_by_priority_desc");
@@ -72,7 +65,7 @@ function MergeRoomUsesOfTopPriority($uses){
     foreach($uses as $use){
         if($use['priority'] >= $priority) $roomUses[] = $use;
     }
-    $room_use = ['light_min'=>null,'light_max'=>null,'light_end'=>null];
+    $room_use = ['light_level'=>0,'light_min'=>null,'light_max'=>null,'light_end'=>null];
     $useTypes = [];
     $light_end_count = 0;
     foreach($roomUses as $use){
@@ -122,30 +115,69 @@ function MergeRoomUsesOfTopPriority($uses){
             $room_use['light_level'] = $room_use['light_max'];
     if(!isset($room_use['light_level'])){
         if(!is_null($room_use['light_end'])) $room_use['light_level'] = $room_use['light_end'];
-        else $room_use['light_level'] = null;
+        else $room_use['light_level'] = 0;
     } 
     return $room_use;
 }
 /**
- * [service] 
+ * [service|NullProfile::CheckForRoomUseStart] 
  * will check for scheduled room uses that are starting this minute and log those room uses
  * creates RoomUseLog for any RoomUse that is starting this minute
  */
 function CheckForRoomUseStart(){
     Services::Start("NullProfile::CheckForRoomUseStart");
+    StartRoomUses(RoomUses::StartingNow());
+    /*
     $uses = RoomUses::StartingNow();
     foreach($uses as $use){
         $type = $use['type'];
-        Services::Start("NullProfile::CheckForRoomUseStart::$type");
+        //Services::Start("NullProfile::CheckForRoomUseStart::$type");
         $use = ParseRoomUseScheduleTimes($use);
         $user = Users::UserId($use['user_id']);
         $room = Rooms::RoomId($use['room_id']);
         $save = RoomUseLog::LogRoomUse($use);
-        Services::Log("NullProfile::CheckForRoomUseStart::$type",$room['name'].": ".$user['username']." ".$use['type'].". ".$save['error']);
-        Services::Log("NullProfile::CheckForRoomUseStart",$room['name'].": ".$user['username']." ".$use['type'].". ".$save['error']);
-        Services::Complete("NullProfile::CheckForRoomUseStart::$type");
+        //Services::Log("NullProfile::CheckForRoomUseStart::$type",$room['name'].": ".$user['username']." ".$use['type'].". ".$save['error']);
+        //Services::Log("NullProfile::CheckForRoomUseStart",$room['name'].": ".$user['username']." ".$use['type'].". ".$save['error']);
+        //Services::Complete("NullProfile::CheckForRoomUseStart::$type");
+    }
+    */
+    $schedules = DailySchedule::Today();
+    $user_schedules = [];
+    foreach($schedules as $schedule){
+        if(!isset($user_schedules[$schedule['user_id']]) || DailySchedule::CompareCoverage($user_schedules[$schedule['user_id']],$schedule)) {
+            $user_schedules[$schedule['user_id']] = $schedule;
+        }
+    }
+    $schedules = DailyScheduleOverrides::Today();
+    $user_schedule_overrides = []; // holder so only the first override for each user get's applied
+    foreach($schedules as $schedule){
+        if(!isset($user_schedule_overrides[$schedule['user_id']])) {
+            $user_schedule_overrides[$schedule['user_id']] = $schedule;
+            $user_schedules[$schedule['user_id']] = $schedule;
+        }
+    }
+    foreach($user_schedules as $schedule){
+        // start the room use that starts now with the matching schedule tag
+        StartRoomUses(RoomUses::StartingNowUser($schedule['user_id'],$schedule['schedule']));
     }
     Services::Complete("NullProfile::CheckForRoomUseStart");
+}
+/**
+ * [service|NullProfile::CheckForRoomUseStart::$type]
+ * start a list of room uses
+ */
+function StartRoomUses($uses){
+    foreach($uses as $use){
+        $type = $use['type'];
+        Services::Start("NullProfile::StartRoomUses::$type");
+        $use = ParseRoomUseScheduleTimes($use);
+        $user = Users::UserId($use['user_id']);
+        $room = Rooms::RoomId($use['room_id']);
+        $save = RoomUseLog::LogRoomUse($use);
+        Services::Log("NullProfile::StartRoomUses::$type",$room['name'].": ".$user['username']." ".$use['type'].". ".$save['error']);
+        Services::Log("NullProfile::CheckForRoomUseStart",$room['name'].": ".$user['username']." ".$use['type'].". ".$save['error']);
+        Services::Complete("NullProfile::StartRoomUses::$type");
+    }
 }
 /**
  * sort function for room uses by priority and when they stop and start

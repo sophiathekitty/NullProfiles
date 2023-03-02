@@ -30,7 +30,7 @@ class UserProfileStamp {
         $profile['pronouns'] = UserProfileStamp::Pronouns($user_id);
         $profile['images'] = ProfileImageStamp::ProfileImages($user_id);
         $profile['rooms'] = UserProfileStamp::Rooms($user_id);
-        $profile['schedule'] = SleepSchedule::Bedtime($user_id,date("n"),date("w"));
+        //$profile['schedule'] = SleepSchedule::Bedtime($user_id,date("n"),date("w"));
         return $profile;
     }
     /**

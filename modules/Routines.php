@@ -48,4 +48,50 @@ function StartRoutine($routine_id){
     }
     return $routine;
 }
+/**
+ * get the routine that is within it's quick run window...
+ * @param int $user_id the user id
+ * @return array|null the routine within the window
+ */
+function RoutineWindow($user_id){
+    $routines = Routines::UserId($user_id);
+    $current = null;
+    $now_time = (int)strtotime("2010-01-02 ".date("H:i:s"));
+    $last_window_size = null;
+    foreach($routines as $routine){
+        if(!is_null($routine['start_time']) && !is_null($routine['stop_time'])){
+            $start_time = (int)strtotime("2010-01-02 ".$routine['start_time']);
+            $stop_time = (int)strtotime("2010-01-02 ".$routine['stop_time']);
+            if(
+                ($start_time > $stop_time && ($now_time > $start_time || $now_time < $stop_time)) || 
+                ($start_time < $stop_time && ($now_time > $start_time && $now_time < $stop_time))
+            ) {
+                if(is_null($current)){
+                    $current = $routine;
+                    $last_window_size = RoutineWindowSize($routine,$now_time,$start_time,$stop_time);
+                } else {
+                    $window_size = RoutineWindowSize($routine,$now_time,$start_time,$stop_time);
+                    if($window_size < $last_window_size){
+                        $current = $routine;
+                        $last_window_size = $window_size;
+                    }
+                }
+            }
+        }
+    }
+    return $current;
+}
+function RoutineWindowSize($routine,$now_time,$start_time,$stop_time){
+    if($now_time > $start_time) $start_delta = $now_time - $start_time;
+    else {
+        $start_time = (int)strtotime("2010-01-01 ".$routine['start_time']);
+        $start_delta = $now_time - $start_time;
+    }
+    if($now_time < $stop_time) $stop_delta = $start_time - $now_time;
+    else {
+        $stop_time = (int)strtotime("2010-01-03 ".$routine['start_time']);
+        $stop_delta = $start_time - $now_time;
+    }
+    return $stop_delta + $start_delta;
+}
 ?>
