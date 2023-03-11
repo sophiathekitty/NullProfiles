@@ -94,4 +94,17 @@ function RoutineWindowSize($routine,$now_time,$start_time,$stop_time){
     }
     return $stop_delta + $start_delta;
 }
+function RoutineRunning($routine_id){
+    $routines = RoomUseLog::RoutineRoomUses($routine_id);
+    if(count($routines) > 0){
+        $first_start = $routines[0]['start'];
+        $last_stop = $routines[0]['stop'];
+        foreach($routines as $routine){
+            if(strtotime($first_start) > strtotime($routine['start'])) $first_start = $routine['start'];
+            if(strtotime($last_stop) > strtotime($routine['stop'])) $last_stop = $routine['stop'];
+        }
+        return (time() > strtotime($first_start) && time() < strtotime($last_stop));
+    }
+    return false;
+}
 ?>

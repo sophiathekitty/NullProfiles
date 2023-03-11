@@ -100,7 +100,7 @@ class RoomUseLog extends clsModel {
      */
     public static function LogRoomUse($data){
         $instance = RoomUseLog::GetInstance();
-        $instance->PruneField("stop",DaysToSeconds(2));
+        $instance->PruneField("stop",DaysToSeconds(1));
         if(!isset($data['stop']) && isset($data['stop_time'])) $data['stop'] = date('Y-m-d ').$data['stop_time'];
         if(!isset($data['stop']) && isset($data['length_minutes'])) $data['stop'] = date('Y-m-d H:i:s',time()+MinutesToSeconds($data['length_minutes']));
         $data = $instance->CleanDataSkipId($data);

@@ -38,13 +38,24 @@ class RoutinesLog extends clsModel {
         return RoutinesLog::$instance;
     }
     /**
-     * get room uses for a routine
+     * get routine log by routine id
      * @param int $routine_id the routine's id
      * @return array list of user's routinesLog data arrays
      */
     public static function RoutineId($routine_id){
         $instance = RoutinesLog::GetInstance();
         return $instance->LoadAllWhere(['routine_id'=>$routine_id]);
+    }
+    /**
+     * has this routine run within the last however many minutes?
+     * @param int $routine_id the routine's id
+     * @param float $minutes the number of minutes back in time to check
+     * @return array list of user's routinesLog data arrays
+     */
+    public static function RoutineIdRecent($routine_id,$minutes){
+        $instance = RoutinesLog::GetInstance();
+        $datetime = date("Y-m-d H:i:s",time()-MinutesToSeconds($minutes));
+        return $instance->LoadWhereFieldAfter(['routine_id'=>$routine_id],"created",$datetime);
     }
     /**
      * save a room use
