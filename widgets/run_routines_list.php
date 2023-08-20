@@ -8,7 +8,8 @@ header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 ?><dialog id="routines_run_list">
     <nav class="routines">
-        <?php foreach($routines as $routine){ ?><a href="#routine" action="run" routine_id="<?=$routine['id'];?>"><?=$routine['name'];?></a><?php } ?>
+        <?php foreach($routines as $routine){ ?><span><a href="#routine" action="run" routine_id="<?=$routine['id'];?>"><?=$routine['name'];?></a><a href="edit" action="edit" routine_id="<?=$routine['id'];?>">edit</a></span><?php } ?>
+        <a href="#routine" action="create">create new</a>
         <a href="#routine" action="cancel">close</a>
     </nav>
 </dialog>

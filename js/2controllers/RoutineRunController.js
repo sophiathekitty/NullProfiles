@@ -14,7 +14,7 @@ class RoutineRunController extends Controller {
         if(this.debug) console.info("RoutineRunController::Ready");
         this.view.build();
         this.refreshInterval();
-        this.listenForEvent("mousedown","footer","nav.routines a[action=run]",this.routinesMouseDownHandler.bind(this));
+        this.listenForEvent("mousedown touchstart","footer","nav.routines a[action=run]",this.routinesMouseDownHandler.bind(this));
         this.click("footer","nav.routines a[action=list]",this.showRoutinesListClick.bind(this));
         this.click("body","dialog nav.routines a[action=cancel]",this.hideRoutinesListClick.bind(this));
         this.click("body","dialog nav.routines a[action=run]",this.runRoutineClick.bind(this));
@@ -28,8 +28,8 @@ class RoutineRunController extends Controller {
         if(this.debug) console.info("RoutineRunController::routinesMouseDownHandler",e);
         e.preventDefault();
         this.showListTimeout = setTimeout(this.showRoutinesList.bind(this),3000);
-        this.listenForEvent("mouseup","footer","nav.routines a[action=run]",this.routinesMouseUpHandler.bind(this));
-        this.listenForEvent("mouseout","footer","nav.routines a[action=run]",this.routinesMouseOutHandler.bind(this));
+        this.listenForEvent("mouseup touchend","footer","nav.routines a[action=run]",this.routinesMouseUpHandler.bind(this));
+        this.listenForEvent("mouseout touchcancel","footer","nav.routines a[action=run]",this.routinesMouseOutHandler.bind(this));
         this.showingList = false;
     }
     /**
@@ -40,8 +40,8 @@ class RoutineRunController extends Controller {
         if(this.debug) console.info("RoutineRunController::routinesMouseUpHandler",e);
         e.preventDefault();
         clearTimeout(this.showListTimeout);
-        this.removeListenerForEvent("mouseup","footer","nav.routines a[action=run]");
-        this.removeListenerForEvent("mouseout","footer","nav.routines a[action=run]");
+        this.removeListenerForEvent("mouseup touchend","footer","nav.routines a[action=run]");
+        this.removeListenerForEvent("mouseout touchcancel","footer","nav.routines a[action=run]");
         // get the routine id and run the routine
         var routine_id = $(e.target).attr("routine_id");
         if(this.debug) console.log("RoutineRunController::routinesMouseUpHandler::routine_id",routine_id);
@@ -80,8 +80,8 @@ class RoutineRunController extends Controller {
         if(this.debug) console.info("RoutineRunController::routinesMouseOutHandler",e);
         e.preventDefault();
         clearTimeout(this.showListTimeout);
-        this.removeListenerForEvent("mouseup","footer","nav.routines a[action=run]");
-        this.removeListenerForEvent("mouseout","footer","nav.routines a[action=run]");
+        this.removeListenerForEvent("mouseup touchend","footer","nav.routines a[action=run]");
+        this.removeListenerForEvent("mouseout touchcancel","footer","nav.routines a[action=run]");
     }
     /**
      * click the routines list button to show the routines list
@@ -99,6 +99,7 @@ class RoutineRunController extends Controller {
     hideRoutinesListClick(e){
         if(this.debug) console.info("RoutineRunController::hideRoutinesListClick",e);
         e.preventDefault();
+        this.showingList = false;
         this.view.hideRoutinesList();
     }
     showRoutinesList(){
@@ -106,8 +107,8 @@ class RoutineRunController extends Controller {
         this.showingList = true;
         if(this.debug) console.info("RoutineRunController::showRoutinesList ----?");
         clearTimeout(this.showListTimeout);
-        this.removeListenerForEvent("mouseup","footer","nav.routines a[action=run]");
-        this.removeListenerForEvent("mouseout","footer","nav.routines a[action=run]");
+        this.removeListenerForEvent("mouseup touchend","footer","nav.routines a[action=run]");
+        this.removeListenerForEvent("mouseout touchcancel","footer","nav.routines a[action=run]");
         this.view.showRoutinesList();
     }
     refresh(){

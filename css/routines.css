@@ -1,0 +1,45 @@
+/**
+ * CSS for the routines_run_list dialog.
+ */
+dialog#routines_run_list {
+    background-color: var(--background);
+    border: thin solid black;
+    box-shadow: 5px 5px 5px black;
+    padding: 0em;
+}
+dialog#routines_run_list::before{
+    content: "Routines";
+    display: block;
+    background-color: var(--list_header_back);
+    color: var(--list_header_text);
+    padding: 0.5em;
+    margin: 0em;
+    border-bottom: thin solid black;
+}
+dialog#routines_run_list nav {
+    display: flex;
+    flex-direction: column;
+}
+dialog#routines_run_list nav span {
+    flex-grow: 1;
+    padding: 0.25em;
+    display: flex;
+}
+dialog#routines_run_list nav a {
+    display: block;
+    padding: 0.25em;
+    text-decoration: none;
+    color: var(--link);
+}
+dialog#routines_run_list nav span:nth-child(even){
+    background-color: var(--list_even);
+}
+dialog#routines_run_list nav a[action="cancel"] {
+    color: var(--highlight);
+}
+dialog#routines_run_list nav a[action="edit"] {
+    color: var(--null);
+}
+/**
+ * CSS for the routines_editor dialog.
+ */
