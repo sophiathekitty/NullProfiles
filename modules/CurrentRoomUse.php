@@ -12,7 +12,14 @@ function CurrentRoomUse($room_id){
     }
     //usort($uses,"sort_room_uses_by_priority_desc");
     if(count($uses) > 0) return MergeRoomUsesOfTopPriority($uses);
-    return null;
+    $use = LinkingRoom::GetLinkingRoom($room_id);
+    if(is_null($use)) return null;
+    $use['type'] = "person";
+    $use['title'] = "Linking Room";
+    $use['light_level'] = 0;
+    if(!is_null($use['light_min'])) $use['light_level'] = $use['light_min'];
+    if(!is_null($use['light_max'])) $use['light_level'] = $use['light_max'];
+    return $use;
 }
 /**
  * adds the start datetime and stop datetime from the start_time and stop_time

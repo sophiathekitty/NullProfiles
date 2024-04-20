@@ -126,6 +126,23 @@ class RoomUseLog extends clsModel {
         return $active_uses;
     }
     /**
+     * get all active room uses
+     * @return array the list of active room uses
+     */
+    public static function ActiveRoomUses(){
+        $instance = RoomUseLog::GetInstance();
+        $uses = $instance->LoadFieldAfter('stop',date('Y-m-d H:i:s'));
+        if(count($uses) == 0) return null;
+        //usort($uses,"sort_room_uses_by_priority_desc");
+        $active_uses = [];
+        $now = time();
+        foreach($uses as $use){
+            if(strtotime($use['start']) < $now && $now < strtotime($use['stop'])) $active_uses[] = $use;
+        }
+        if(count($active_uses) == 0) return null;
+        return $active_uses;
+    }
+    /**
      * get the room uses for a specific routine
      * @param int $routine_id the routine id
      * @return array the list of room uses
