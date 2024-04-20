@@ -82,15 +82,15 @@ class LinkingRoom extends clsModel {
      * @return array the report of the delete
      */
     public static function ClearUnusedLinkingRooms($rooms){
-        $linking_room = LinkingRoom::GetInstance();
-        $linking_rooms = $linking_room->LoadAll();
+        $instance = LinkingRoom::GetInstance();
+        $linking_rooms = $instance->LoadAll();
         $delete = [];
         foreach($linking_rooms as $linking_room){
             if(!in_array($linking_room['room_id'],$rooms)) $delete[] = $linking_room['room_id'];
         }
         $report = [];
         foreach($delete as $room_id){
-            $report[] = $linking_room->Delete(['room_id'=>$room_id]);
+            $report[] = $instance->DeleteFieldValue('room_id',$room_id);
         }
         return $report;
     }
