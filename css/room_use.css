@@ -6,3 +6,12 @@
     background-repeat: no-repeat;
     background-position: center center;
 }
+#floors .room.card .details span.room-use-details{
+    display: flex;
+}
+#floors .room.card .details ul.active-room-use::before{
+    content: 'Active Room Use';
+}
+#floors .room.card .details ul.room-uses-list::before{
+    content: 'Room Uses';
+}

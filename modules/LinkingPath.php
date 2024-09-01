@@ -140,16 +140,19 @@ class LinkingRooms {
         $light_max = null;
         $light_min = null;
         $light_end = null;
+        $light_end_count = 0;
         foreach($rooms as $room){
+            if(!is_null($room['light_max']) || (!is_null($room['light_min']) && (int)$room['light_min'] == 0)) continue;
             if(!in_array($room['room_id'],$unique_rooms)) $unique_rooms[] = $room['room_id'];
-            if(!is_null($room['light_max']) && (is_null($light_max) || $room['light_max'] < $light_max)) $light_max = $room['light_max'];
+            //if(!is_null($room['light_max']) && (is_null($light_max) || $room['light_max'] < $light_max)) $light_max = $room['light_max'];
             if(!is_null($room['light_min']) && (is_null($light_min) || $room['light_min'] > $light_min)) $light_min = $room['light_min'];
             if(!is_null($room['light_end'])){
                 if(is_null($light_end)) $light_end = $room['light_end'];
                 else $light_end += $room['light_end'];
+                $light_end_count++;
             }
         }
-        if(!is_null($light_end)) $light_end /= count($rooms);
+        if(!is_null($light_end)) $light_end /= $light_end_count;
         $linking_rooms = self::FindAllLinkingRooms($unique_rooms);
         $rooms = [];
         foreach($linking_rooms as $room){
